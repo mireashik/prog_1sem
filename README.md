@@ -1573,7 +1573,73 @@ int main() {
 	}
 }
 ```
+```c++
 
+/* 18. Написать программу, которая определяет количество учеников в классе, чей рост превышает
+средний. Рекомендуемый вид экрана во время работы программы приведен ниже (введенные
+пользователем данные выделены полужирным шрифтом) (см. файл с задачами)*/
+
+#include <iostream>
+#include <vector>
+
+// Внимание: для использования функции format требуется C++/20
+#include <format>
+#include <numeric>
+
+using namespace std;
+
+string num_with_suffix(int number) {
+    string suffix;
+
+    if (number % 10 == 1 && number % 100 != 11) {
+        suffix = "-й";
+    } else if ((number % 10 == 2 || number % 10 == 3 || number % 10 == 4) &&
+               (number % 100 < 10 || number % 100 >= 20)) {
+        suffix = "-х";
+    } else {
+        suffix = "-и";
+    }
+    return to_string(number) + suffix;
+
+}
+
+int main() {
+    vector<float> student_heights;
+
+    cout << "Введите рост(см) и нажмите <Enter>" << endl;
+    cout << "Для завершения введите 0 и нажмите <Enter>" << endl;
+
+    while (true) {
+        float height;
+        cin >> height;
+
+        if (cin.fail() or height < 0) {
+            cout << "Ошибка: проверьте правильность вводимых данных" << endl;
+            return 0;
+        }
+
+        if (height == 0) {
+            break;
+        }
+
+        student_heights.push_back(height);
+    }
+
+    float average_height =
+            (float) accumulate(student_heights.begin(), student_heights.end(), 0) / (float) student_heights.size();
+
+    cout << format("Средний рост: {:.1f} см", average_height) << endl;
+
+    int taller_than_average = 0;
+
+    for (const auto &height: student_heights) {
+        if (height > average_height) taller_than_average++;
+    }
+
+    cout << format("У {} человек рост превышает средний.", num_with_suffix(taller_than_average)) << endl;
+}
+
+```
 ### 5.5 «Файлы»
 ```c++
 // 25. Организовать создание текстового файла. Подсчитать в текстовом файле число непустых строк, в которых символы упорядочены по возрастанию.
