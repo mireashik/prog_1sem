@@ -487,7 +487,65 @@ int main() {
   cout << x.substr(count(x.begin(), x.end(), ' '), x.length()) << endl; // конструкция чистит пробелы " "
   main();
 ```
+Сортировка с помощью двоичного дерева (BST, binary search tree)
+```c++
+#include <iostream>
+#include <string>
+#include <windows.h>
 
+using namespace std;
+
+struct Node {
+    int data;
+
+    Node* left;
+    Node* right;
+
+    Node(int n) : data(n), left(nullptr), right(nullptr) {}
+};
+
+Node* insert_to_tree(Node* root, int n) {
+    if (root == nullptr) return new Node(n);
+
+    if (n < root->data) {
+        root->left = insert_to_tree(root->left, n);
+    }
+    else {
+        root->right = insert_to_tree(root->right, n);
+    }
+    return root;
+}
+
+void in_order_traversal(Node* root) {
+    if (root != nullptr) {
+        in_order_traversal(root->left);
+        cout << (char)root->data << " ";
+        in_order_traversal(root->right);
+    }
+}
+
+int main() {
+
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
+
+    string text;
+    cout << "Введите текст для сортировки: ";
+    getline(cin, text);
+
+    text.erase(remove(text.begin(), text.end(), ' '), text.end());
+
+    Node* root = nullptr;
+
+    for (auto c : text) {
+        root = insert_to_tree(root, c);
+    }
+
+    in_order_traversal(root);
+
+    return 0;
+}
+```
 ## Домашнее задание 4
 ### 4.1 «Файл»
 Создать файл, записать в него 10 чисел, закрыть, потом вновь открыть файл и найти сумму чисел.
@@ -1400,7 +1458,6 @@ int main() {
 
 1. Замена пробелов на что-то https://pastebin.com/br3t26b2
 
-
 ```c++
 // 15. Поиск определенного слова в текстовом файле
 #include <stdio.h>
@@ -1517,7 +1574,89 @@ int main()
     cout << max << endl;
 }
 ```
+```c++
+/*
+    27. Вычисление частоты повтора символа в текстовом файле.
+*/
+#include <iostream>
+#include <fstream>
+#include <map>
 
+// Требуется C++/20 и выше
+#include <format>
+
+using namespace std;
+
+int main() {
+
+    setlocale(LC_ALL, "ru_RU");
+
+    ifstream file{ "text.txt"};
+
+    map<char, int> char_freq;
+
+    char c;
+
+    while (file.get(c)) {
+
+        if (isalpha(c) || isdigit(c)) {
+            char_freq[c]++;
+        }
+    }
+
+    file.close();
+
+    for (const auto& data : char_freq) {
+        cout << format("{} - {} раз.", data.first, data.second) << endl;
+    }
+
+    return 0;
+}
+```
+```c++
+/*
+    35. Составление словаря для слов текстового файла.
+*/
+#include <iostream>
+#include <fstream>
+#include <map>
+
+// Требуется C++/20 и выше
+#include <format>
+
+using namespace std;
+
+int main() {
+
+	setlocale(LC_ALL, "ru_RU");
+
+	ifstream file;
+
+	file.open("text.txt", ios::in | ios::binary);
+
+	map<string, int> word_freq;
+
+	string line;
+
+	while (file >> line) {
+
+		for (char& c : line) {
+			if (ispunct(c)) c = ' ';
+			c = tolower(c);
+		}
+
+		if (!line.empty()) word_freq[line]++;
+	}
+
+	file.close();
+
+	for (const auto& data : word_freq) {
+		cout << format("{} - {} раз.", data.first, data.second) << endl;
+	}
+
+	return 0;
+}
+```
 ### 5.4 «Ряды»
 
 ```c++
